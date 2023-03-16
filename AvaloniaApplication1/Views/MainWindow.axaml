@@ -114,11 +114,12 @@
 				  Height="320"
 				  Margin=" 0 10 0 0"
                    SelectionMode="Single"
+				  
 				  >
 			<DataGrid.Columns>
 				<DataGridTemplateColumn>
 					<DataTemplate>
-						<CheckBox HorizontalAlignment="Center"></CheckBox>
+						<CheckBox HorizontalAlignment="Center" Height="10"></CheckBox>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn>
@@ -145,21 +146,9 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 			<DataGrid.Styles>
-				<Style Selector="DataGridCell:pointerover">
-					<Setter Property="BorderBrush" Value="Transparent"></Setter>
-					<Setter Property="BorderThickness" Value="1"></Setter>
-				</Style><!--
-				<Style Selector="DataGridCell">
-					<Setter Property="Template">
-						<Setter.Value>
-							<ControlTemplate>
-								<Border IsHitTestVisible="False">
-									<ContentPresenter/>
-								</Border>
-							</ControlTemplate>
-						</Setter.Value>
-					</Setter>
-				</Style>-->
+				<Style Selector="DataGridCell Rectangle">
+					<Setter Property="IsVisible" Value="False"></Setter>
+				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
 
