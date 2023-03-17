@@ -19,68 +19,89 @@ using System.Text.Json.Serialization;
 using System.Globalization;
 using Avalonia.Media.Imaging;
 
+//=====================================================
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+using AvaloniaApplication1.ViewModels;
+using AvaloniaApplication1.Views;
+ 
+
+
 namespace AvaloniaApplication1.ViewModels
 {
+    public class Car
+    {
+        public string Name { get; set; }
+
+        public Car(string name )
+        {
+            Name = name;
+        }
+    }
     public class MainWindowViewModel : ViewModelBase
     {
         private static IconConverter? s_iconConverter;
-        private ObservableCollection<Human> _humans;
-        public ObservableCollection<FileTreeNodeModel> _files;
+        private ObservableCollection<FileTreeNodeModel> _files;
+        private FileTreeNodeModel _file;
+        private object _selectedItem;
+
+        public static List<object> SelectedItems= new List<object>();
+        private int _countSelectedItems;
+
+
         public MainWindowViewModel()
         {
             Files = FileManager.GetFiles("C:\\Program Files (x86)");
-            
-            //MyCommand = new TestCommand1(ExecuteMyCommand);
-            Humans = new ObservableCollection<Human>()
-            {
-                new Human("Alexey",22),
-                 new Human("Roman",22),
-                  new Human("Mikhail",22),
-                  new Human("Pavel",22),
-                  new Human("Alexander",22),
-                  new Human("Sergey",22),
-
-            };
         }
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
-        public ObservableCollection<Human> Humans { get { return _humans; } set => this.RaiseAndSetIfChanged(ref _humans, value); }
-        public string Greeting => "Welcome to Avalonia!";
 
-        //public ICommand TestCommandMVVM
+        public object SelectedItem 
+        { 
+            get 
+            {
+                return this._selectedItem; 
+            } 
+            set
+            {
+                SelectedItems.Add(value);
+                _countSelectedItems++;
+                this.RaiseAndSetIfChanged(ref _selectedItem, value); 
+            }
+        }
+
+        public int CountSelectedItems { get { return _countSelectedItems; } set => this.RaiseAndSetIfChanged(ref _countSelectedItems, value); }
+
+        //Worked
+        //public ICommand COMMAND
         //{
         //    get
         //    {
-        //        return new TestCommand();
-        //    }
-            
-        //}
-        //public ICommand MyCommand { get; set; }
-        //public ICommand TestCommandMVVM2
-        //{
-        //    get
-        //    {
-        //        return new TestCommand1((object a) =>
+        //        return new ActionCommand((object a) =>
         //        {
-        //            new Window1().Show();
+        //            CountSelectedItems++;
         //        });
         //    }
-
         //}
         public ICommand TestDataGridCommand
         {
             get
             {
-                return new TestCommand1((object a) =>
+                return new ActionCommand((object a) =>
                 {
-                    Humans = null;
+                    Files = null;
                 });
             }
         }
-
-        public string TextBoxText { get => "TEEEEST TEXT BOX"; }
-        public void ExecuteMyCommand(object a)
+        public ICommand CancelCommand
         {
-            new Window1().Show();
+            get
+            {
+                return new ActionCommand((object a) =>
+                {
+
+                });
+            }
         }
 
         public static IMultiValueConverter FileIconConverter

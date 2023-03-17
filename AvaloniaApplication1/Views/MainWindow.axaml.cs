@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using AvaloniaApplication1.Models;
 
 namespace AvaloniaApplication1.Views
 {
@@ -13,6 +14,15 @@ namespace AvaloniaApplication1.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+        private void DoubleTapped(object sender, RoutedEventArgs e)
+        {
+            //var a = sender as FileTreeNodeModel;
+            if (sender is DataGrid)
+            {
+                new Window1().Show();
+            }
+     
         }
     }
 }

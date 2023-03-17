@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace AvaloniaApplication1.ViewModels.Commands
 {
-    public class TestCommand1: ICommand
+    public class ActionCommand: ICommand
     {
         private Action<object> execute;
         private Func<object, bool> canExecute;
@@ -18,7 +18,7 @@ namespace AvaloniaApplication1.ViewModels.Commands
             add { }
             remove { }
         }
-        public TestCommand1(Action<object> execute, Func<object, bool> canExecute = null)
+        public ActionCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
