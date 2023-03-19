@@ -61,6 +61,37 @@
 				 Text="{Binding CountSelectedItems}"
             ></TextBox>
 
+		<!--<ListBox Grid.Row="2"
+				 BorderBrush="Black"
+				  BorderThickness="1"
+				  Width="380"
+				 Height="320"
+				  Margin=" 0 10 0 0"
+				 Items="{Binding Files}"
+				 >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal" Height="25">
+						<CheckBox></CheckBox>
+						<Image Margin="0 0 0 0"
+                                   VerticalAlignment="Bottom"
+                                   Height="25">
+							<Image.Source>
+								<MultiBinding Converter="{x:Static vm:MainWindowViewModel.FileIconConverter}">
+									<Binding Path="IsDirectory"/>
+									<Binding Path="IsExpanded"/>
+								</MultiBinding>
+							</Image.Source>
+						</Image>
+						<Label Content="{Binding Name}" VerticalAlignment="Stretch" ></Label>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+			<ListBox.Styles>
+	
+			</ListBox.Styles>
+		</ListBox>-->
+		
 		<DataGrid Name="fileViewer"
 				  Grid.Row="2"
 				  BorderBrush="Black"
@@ -71,7 +102,6 @@
 				  Margin=" 0 10 0 0"
                   SelectionMode="Single"
 				  SelectedItem="{Binding SelectedItem}"
-				  DoubleTapped="DoubleTapped"
 				  
 				  >
 			<DataGrid.Columns>
@@ -83,9 +113,8 @@
 				<DataGridTemplateColumn>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal" 
-									Spacing="20">
-
-
+									Spacing="20" 
+									DoubleTapped="CLICK">
 							<Image Margin="0 0 0 0"
                                    VerticalAlignment="Center"
                                    Height="25">
@@ -106,11 +135,6 @@
 			<DataGrid.Styles>
 				<Style Selector="DataGridCell Rectangle">
 					<Setter Property="IsVisible" Value="False"></Setter>
-				</Style>
-				<Style Selector="DataGridRow">
-			
-				</Style>
-				<Style Selector="DataGridCell">
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
