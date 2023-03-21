@@ -39,7 +39,10 @@ namespace AvaloniaApplication1.Views
                 Window1.FileName = selectedItem.Name;
                 new Window1().Show();
             }
-          
+        }
+        private void doubleTab(object sender, RoutedEventArgs e)
+        {
+            new Window1().Show();
         }
     }
 }

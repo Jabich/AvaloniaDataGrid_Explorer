@@ -18,27 +18,10 @@ using Avalonia;
 using System.Text.Json.Serialization;
 using System.Globalization;
 using Avalonia.Media.Imaging;
-
-//=====================================================
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
-using AvaloniaApplication1.ViewModels;
-using AvaloniaApplication1.Views;
- 
-
+using Avalonia.Interactivity;
 
 namespace AvaloniaApplication1.ViewModels
 {
-    public class Car
-    {
-        public string Name { get; set; }
-
-        public Car(string name )
-        {
-            Name = name;
-        }
-    }
     public class MainWindowViewModel : ViewModelBase
     {
         private static IconConverter? s_iconConverter;
@@ -71,18 +54,6 @@ namespace AvaloniaApplication1.ViewModels
         }
 
         public int CountSelectedItems { get { return _countSelectedItems; } set => this.RaiseAndSetIfChanged(ref _countSelectedItems, value); }
-
-        //Worked
-        //public ICommand COMMAND
-        //{
-        //    get
-        //    {
-        //        return new ActionCommand((object a) =>
-        //        {
-        //            CountSelectedItems++;
-        //        });
-        //    }
-        //}
         public ICommand TestDataGridCommand
         {
             get
@@ -93,13 +64,34 @@ namespace AvaloniaApplication1.ViewModels
                 });
             }
         }
-        public ICommand CancelCommand
+        public ICommand ForwardFolderCommand
         {
             get
             {
                 return new ActionCommand((object a) =>
                 {
+                    Files = null;
+                });
+            }
+        }
 
+        public ICommand DoubleTab
+        {
+            get
+            {
+                return new ActionCommand((object a) =>
+                {
+                    Files = null;
+                });
+            }
+        }
+        public ICommand ButtonDT
+        {
+            get
+            {
+                return new ActionCommand((object a) =>
+                {
+                    Files = null;
                 });
             }
         }
@@ -154,6 +146,11 @@ namespace AvaloniaApplication1.ViewModels
 
                 return null;
             }
+        }
+
+        private void doubleTab(object sender, RoutedEventArgs e)
+        {
+            new Window1().Show();
         }
 
     }

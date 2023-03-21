@@ -11,20 +11,24 @@ namespace AvaloniaApplication1.Views
         public Window1()
         {
             InitializeComponent();
-            var label = new Label
-            {
-                Content = FileName,
-            };
+            //var label = new Label
+            //{
+            //    Content = FileName,
+            //};
 
-            // Добавление Label в Grid
-            var grid = new Grid();
-            grid.Children.Add(label);
-            Content = grid;
+            //// Добавление Label в Grid
+            //var grid = new Grid();
+            //grid.Children.Add(label);
+            //Content = grid;
         }
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
             
+        }
+        private void doubleTab(object sender, RoutedEventArgs e)
+        {
+            new Window1().Show();
         }
     }
 }
