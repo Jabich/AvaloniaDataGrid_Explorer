@@ -11,15 +11,15 @@ namespace AvaloniaApplication1.Views
         public Window1()
         {
             InitializeComponent();
-            //var label = new Label
-            //{
-            //    Content = FileName,
-            //};
+            var label = new Label
+            {
+                Content = "ASDAWDAWDAW",
+            };
 
-            //// Добавление Label в Grid
-            //var grid = new Grid();
-            //grid.Children.Add(label);
-            //Content = grid;
+            // Добавление Label в Grid
+            var grid = new Grid();
+            grid.Children.Add(label);
+            Content = grid;
         }
         private void InitializeComponent()
         {
@@ -30,5 +30,6 @@ namespace AvaloniaApplication1.Views
         {
             new Window1().Show();
         }
+        //public static string 
     }
 }

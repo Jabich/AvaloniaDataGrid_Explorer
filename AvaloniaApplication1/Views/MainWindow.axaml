@@ -4,7 +4,7 @@
 		xmlns:m ="using:AvaloniaApplication1.Models"
 		xmlns:i ="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 		xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-	
+	    
 		
 	    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -65,8 +65,9 @@
 
 		</TextBox>
 
-		<!--<ListBox Grid.Row="2"
-				 BorderBrush="Black"
+		<ListBox  x:Name="myListBox"
+			      Grid.Row="2"
+				  BorderBrush="Black"
 				  BorderThickness="1"
 				  Width="380"
 				 Height="320"
@@ -74,7 +75,10 @@
 				 Items="{Binding Files}"
 				 >
 			<i:Interaction.Behaviors>
-				<IterationTyp
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction Command="{Binding ForwardFileTree}"
+											CommandParameter="{Binding ElementName=myListBox, Path=SelectedItem}"/>
+				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			
 			<ListBox.ItemTemplate>
@@ -98,9 +102,9 @@
 			<ListBox.Styles>
 	
 			</ListBox.Styles>
-		</ListBox>-->
+		</ListBox>
 
-		<DataGrid Name="fileViewer"
+		<!--<DataGrid Name="fileViewer"
 				  Grid.Row="2"
 				  BorderBrush="Black"
 				  BorderThickness="1"
@@ -121,9 +125,11 @@
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn>
-					<DataTemplate>
-					
-						<Button HorizontalAlignment="Stretch"
+					<DataTemplate>-->
+
+
+						<!--====================== Использование Button ========================-->
+						<!--<Button HorizontalAlignment="Stretch"
 								Background="Transparent"
 								Height="40"
 								Command="{Binding ForwardFolderCommand}">
@@ -157,8 +163,15 @@
 									<Setter Property="Background" Value="Transparent"></Setter>
 								</Style>
 							</Button.Styles>
-						</Button>
-					</DataTemplate>
+						</Button>-->
+
+						<!--====================== Использование DataGrid ========================-->
+						<!--<Grid ColumnDefinitions="Auto,Auto">
+							<Label Content="{Binding Name}"></Label>
+						</Grid>-->
+			
+			
+					<!--</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 			<DataGrid.Styles>
@@ -166,7 +179,7 @@
 					<Setter Property="IsVisible" Value="False"></Setter>
 				</Style>
 			</DataGrid.Styles>
-		</DataGrid>
+		</DataGrid>-->
 
 
 		<StackPanel Grid.Row="3"

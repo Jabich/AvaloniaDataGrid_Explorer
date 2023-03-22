@@ -19,83 +19,93 @@ using System.Text.Json.Serialization;
 using System.Globalization;
 using Avalonia.Media.Imaging;
 using Avalonia.Interactivity;
+using Prism.Commands;
+
 
 namespace AvaloniaApplication1.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private static IconConverter? s_iconConverter;
-        private ObservableCollection<FileTreeNodeModel> _files;
-        private FileTreeNodeModel _file;
-        private object _selectedItem;
-
-        public static List<object> SelectedItems= new List<object>();
-        private int _countSelectedItems;
-
-
         public MainWindowViewModel()
         {
             Files = FileManager.GetFiles("C:\\Program Files (x86)");
         }
+
+        #region FIELDS
+        private static IconConverter? s_iconConverter;
+        private ObservableCollection<FileTreeNodeModel> _files;
+        private FileTreeNodeModel _file;
+        private object _selectedItem;
+        private int _countSelectedItems;
+        private List<string> _filePathsTree;
+        private string _currentFolderPath;
+        #endregion
+       
+
+        #region PROPERTIES
+        public int CountSelectedItems { get { return _countSelectedItems; } set => this.RaiseAndSetIfChanged(ref _countSelectedItems, value); }
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
 
-        public object SelectedItem 
-        { 
-            get 
-            {
-                return this._selectedItem; 
-            } 
-            set
-            {
-                SelectedItems.Add(value);
-                _countSelectedItems++;
-                this.RaiseAndSetIfChanged(ref _selectedItem, value); 
-            }
-        }
+        private List<string> FilepPathsTree { get { return _filePathsTree; } set => this.RaiseAndSetIfChanged(ref _filePathsTree, value); }
+        #endregion
 
-        public int CountSelectedItems { get { return _countSelectedItems; } set => this.RaiseAndSetIfChanged(ref _countSelectedItems, value); }
-        public ICommand TestDataGridCommand
-        {
-            get
-            {
-                return new ActionCommand((object a) =>
-                {
-                    Files = null;
-                });
-            }
-        }
-        public ICommand ForwardFolderCommand
-        {
-            get
-            {
-                return new ActionCommand((object a) =>
-                {
-                    Files = null;
-                });
-            }
-        }
 
-        public ICommand DoubleTab
+        #region COMMANDS
+        public ICommand ForwardFileTree
         {
             get
             {
                 return new ActionCommand((object a) =>
                 {
-                    Files = null;
+                    var fileElement = a as FileTreeNodeModel;
+                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
+                    {
+                        Files = FileManager.GetFiles(fileElement.Path);
+                        //_filePathsTree.Add(fileElement.Path);
+                    }
                 });
             }
         }
-        public ICommand ButtonDT
+        public ICommand BackFileTree
         {
             get
             {
                 return new ActionCommand((object a) =>
                 {
-                    Files = null;
+                    if (_filePathsTree.Count >= 2)
+                    {
+                        foreach(string item in _filePathsTree)
+                        {
+                            //if(i)
+                        }
+                    }
+                });
+            }
+        }
+        public ICommand SelectFile
+        {
+            get
+            {
+                return new ActionCommand((object a) =>
+                {
+                    var fileElement = a as FileTreeNodeModel;
+                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
+                    {
+                        Files = FileManager.GetFiles(fileElement.Path);
+                        _filePathsTree.Add(fileElement.Path);
+                        _currentFolderPath= fileElement.Path;
+                    }
                 });
             }
         }
 
+        #endregion
+
+        #region METHODS
+
+        #endregion
+
+        #region CONVERTERS 
         public static IMultiValueConverter FileIconConverter
         {
             get
@@ -147,11 +157,6 @@ namespace AvaloniaApplication1.ViewModels
                 return null;
             }
         }
-
-        private void doubleTab(object sender, RoutedEventArgs e)
-        {
-            new Window1().Show();
-        }
-
+        #endregion
     }
 }

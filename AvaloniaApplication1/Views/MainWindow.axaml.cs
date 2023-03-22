@@ -24,25 +24,5 @@ namespace AvaloniaApplication1.Views
         //    }
      
         //}
-         
-        private void CLICK(object sender, RoutedEventArgs e)
-        {
-            if(sender is FileTreeNodeModel)
-            {
-                new Window1().Show();
-                
-            }
-            if (sender is StackPanel)
-            {
-                var stackPanel = sender as StackPanel;
-                var selectedItem = (FileTreeNodeModel)stackPanel.DataContext;
-                Window1.FileName = selectedItem.Name;
-                new Window1().Show();
-            }
-        }
-        private void doubleTab(object sender, RoutedEventArgs e)
-        {
-            new Window1().Show();
-        }
     }
 }
