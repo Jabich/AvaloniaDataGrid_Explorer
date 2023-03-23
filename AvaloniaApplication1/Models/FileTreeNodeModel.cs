@@ -14,6 +14,7 @@ namespace AvaloniaApplication1.Models
 {
     public class FileTreeNodeModel : ReactiveObject
     {
+        #region FIELDS
         private string _path;
         private string _name;
         private long? _size;
@@ -26,6 +27,8 @@ namespace AvaloniaApplication1.Models
         private string _color;
         private string _hashSum;
         private Thickness _indent;
+        private bool _isChecked;
+        #endregion
 
         public FileTreeNodeModel(
             string path,
@@ -38,7 +41,7 @@ namespace AvaloniaApplication1.Models
             _isExpanded = isRoot;
             IsDirectory = isDirectory;
             HasChildren = isDirectory;
-
+            _isChecked = false;
 
             if(isDirectory)
             {
@@ -50,8 +53,7 @@ namespace AvaloniaApplication1.Models
             }
 
             _color = _name.Length > 5 ? /*"#99C9EF"*/"Red" : "Green";
-            //_hashSum = FileHasher.GetMD5Checksum(_path);
-            //_hashSum = FileHasher.GetSHA256(_path);
+
 
             if (!IsDirectory)
             {
@@ -78,6 +80,16 @@ namespace AvaloniaApplication1.Models
 
         //public int Indent => ModelIndexPath.Count - 1;
 
+        public string CHEKED
+        {
+            get => "true";
+        }
+
+        public bool IsChecked 
+        {
+            get => _isChecked;
+            set => this.RaiseAndSetIfChanged(ref _isChecked, value);
+}
         public Thickness Indent { get => _indent; }
         public string HashSum
         {
@@ -97,7 +109,7 @@ namespace AvaloniaApplication1.Models
         public string Path
         {
             get => _path;
-            private set => this.RaiseAndSetIfChanged(ref _path, value);
+            set => this.RaiseAndSetIfChanged(ref _path, value);
         }
 
         public string Name
@@ -145,7 +157,6 @@ namespace AvaloniaApplication1.Models
             set => this.RaiseAndSetIfChanged(ref _isExpanded, value);
         }
 
-        public bool IsChecked { get; set; }
         public bool IsDirectory { get; }
         public IReadOnlyList<FileTreeNodeModel> Children => _children ??= LoadChildren();
 

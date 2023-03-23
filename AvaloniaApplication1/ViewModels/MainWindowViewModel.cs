@@ -20,6 +20,9 @@ using System.Globalization;
 using Avalonia.Media.Imaging;
 using Avalonia.Interactivity;
 using Prism.Commands;
+using static System.Net.WebRequestMethods;
+using Avalonia.Controls.Shapes;
+using Avalonia.Styling;
 
 
 namespace AvaloniaApplication1.ViewModels
@@ -29,83 +32,29 @@ namespace AvaloniaApplication1.ViewModels
         public MainWindowViewModel()
         {
             Files = FileManager.GetFiles("C:\\Program Files (x86)");
+            CurrentFile = new FileTreeNodeModel("C:\\Program Files (x86)", Directory.Exists("C:\\Program Files (x86)"));
+            SelectPath = "C:\\Program Files (x86)";
         }
 
         #region FIELDS
         private static IconConverter? s_iconConverter;
-        private ObservableCollection<FileTreeNodeModel> _files;
-        private FileTreeNodeModel _file;
-        private object _selectedItem;
-        private int _countSelectedItems;
-        private List<string> _filePathsTree;
-        private string _currentFolderPath;
+        private ObservableCollection<FileTreeNodeModel>? _files;
+        private FileTreeNodeModel? _currentFile;
+        private string _selectPath;
         #endregion
-       
+
 
         #region PROPERTIES
-        public int CountSelectedItems { get { return _countSelectedItems; } set => this.RaiseAndSetIfChanged(ref _countSelectedItems, value); }
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
-
-        private List<string> FilepPathsTree { get { return _filePathsTree; } set => this.RaiseAndSetIfChanged(ref _filePathsTree, value); }
-        #endregion
-
-
-        #region COMMANDS
-        public ICommand ForwardFileTree
-        {
-            get
+        public FileTreeNodeModel CurrentFile { get { return _currentFile; } set => this.RaiseAndSetIfChanged(ref _currentFile, value); }
+        public string SelectPath 
+        { 
+            get 
             {
-                return new ActionCommand((object a) =>
-                {
-                    var fileElement = a as FileTreeNodeModel;
-                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
-                    {
-                        Files = FileManager.GetFiles(fileElement.Path);
-                        //_filePathsTree.Add(fileElement.Path);
-                    }
-                });
+                return _selectPath;
             }
+            set => this.RaiseAndSetIfChanged(ref _selectPath, value);
         }
-        public ICommand BackFileTree
-        {
-            get
-            {
-                return new ActionCommand((object a) =>
-                {
-                    if (_filePathsTree.Count >= 2)
-                    {
-                        foreach(string item in _filePathsTree)
-                        {
-                            //if(i)
-                        }
-                    }
-                });
-            }
-        }
-        public ICommand SelectFile
-        {
-            get
-            {
-                return new ActionCommand((object a) =>
-                {
-                    var fileElement = a as FileTreeNodeModel;
-                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
-                    {
-                        Files = FileManager.GetFiles(fileElement.Path);
-                        _filePathsTree.Add(fileElement.Path);
-                        _currentFolderPath= fileElement.Path;
-                    }
-                });
-            }
-        }
-
-        #endregion
-
-        #region METHODS
-
-        #endregion
-
-        #region CONVERTERS 
         public static IMultiValueConverter FileIconConverter
         {
             get
@@ -129,6 +78,73 @@ namespace AvaloniaApplication1.ViewModels
                 return s_iconConverter;
             }
         }
+
+        #endregion
+
+
+        #region COMMANDS
+        public ICommand ForwardFileTree
+        {
+            get
+            {
+                return new ActionCommand((selectedFile) =>
+                {
+                    var fileElement = selectedFile as FileTreeNodeModel;
+                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
+                    {
+                        CurrentFile = fileElement;
+                        Files = FileManager.GetFiles(fileElement.Path);
+                        SelectPath = fileElement.Path;
+                    }
+                });
+               
+            }
+        }
+        public ICommand BackFileTree
+        {
+            get
+            {
+                return new ActionCommand((object a) =>
+                {
+                    int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
+                    if (countSeparators > 1)
+                    {
+                        string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
+                        CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
+                        Files = FileManager.GetFiles(pathBackFolder);
+                        SelectPath = pathBackFolder;
+                    }
+                });
+            }
+        }
+
+        public ICommand FileSelection
+        {
+            get
+            {
+                return new ActionCommand((obj) =>
+                {
+
+                });
+            }
+        }
+        public ICommand CloseWindow
+        {
+            get
+            {
+                return new ActionCommand((obj) =>
+                {
+                    (obj as Window).Close();
+                });
+            }
+        }
+        #endregion
+
+        #region METHODS
+
+        #endregion
+
+        #region CONVERTERS 
         private class IconConverter : IMultiValueConverter
         {
             private readonly Bitmap _file;

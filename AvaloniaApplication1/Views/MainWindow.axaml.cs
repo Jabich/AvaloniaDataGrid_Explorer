@@ -22,7 +22,6 @@ namespace AvaloniaApplication1.Views
         //    {
         //        new Window1().Show();
         //    }
-     
         //}
     }
 }
