@@ -23,7 +23,7 @@ using Prism.Commands;
 using static System.Net.WebRequestMethods;
 using Avalonia.Controls.Shapes;
 using Avalonia.Styling;
-
+using System.Diagnostics;
 
 namespace AvaloniaApplication1.ViewModels
 {
@@ -124,7 +124,8 @@ namespace AvaloniaApplication1.ViewModels
             {
                 return new ActionCommand((obj) =>
                 {
-
+                    var files = (obj as MainWindowViewModel).Files;
+                    var selectedFiles = FileManager.GetSelectedFiles(files);
                 });
             }
         }
@@ -169,7 +170,6 @@ namespace AvaloniaApplication1.ViewModels
                     else
                         return isExpanded ? _folderExpanded : _folderCollapsed;
                 }
-
                 return null;
             }
         }

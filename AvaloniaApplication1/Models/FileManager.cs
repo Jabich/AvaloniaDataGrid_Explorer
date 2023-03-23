@@ -15,13 +15,25 @@ namespace AvaloniaApplication1.Models
         {
             var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
             var filePaths = Directory.GetFileSystemEntries(path);
-            foreach (var file in filePaths) 
+            foreach (var file in filePaths)
             {
                 outputCollectionFiles.Add(new FileTreeNodeModel(file, ((File.GetAttributes(file) & FileAttributes.Directory) == FileAttributes.Directory)));
             }
 
             return outputCollectionFiles;
-        } 
+        }
+        public static ObservableCollection<FileTreeNodeModel> GetSelectedFiles(ObservableCollection<FileTreeNodeModel> files)
+        {
+            ObservableCollection<FileTreeNodeModel> selectedFiles = new ObservableCollection<FileTreeNodeModel>(); 
+            foreach (var file in files)
+            {
+                if(file.IsChecked == true)
+                {
+                    selectedFiles.Add(file);
+                }
+            }
+            return selectedFiles;
+        }
     }
 }
 ////string directoryPath = "C:\\Temp\\MyFolder";
