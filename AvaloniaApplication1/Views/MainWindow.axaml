@@ -181,7 +181,8 @@
                     Content="ОК"
                     HorizontalContentAlignment="Center"
 					Command="{Binding FileSelection}"
-					CommandParameter="{Binding}">
+					CommandParameter="{Binding}"
+					>
 			</Button>
 			<Button Width="100"
                     Height="30"

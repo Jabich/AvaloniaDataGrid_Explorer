@@ -41,11 +41,13 @@ namespace AvaloniaApplication1.ViewModels
         private ObservableCollection<FileTreeNodeModel>? _files;
         private FileTreeNodeModel? _currentFile;
         private string _selectPath;
+        private ObservableCollection<FileTreeNodeModel>? _filesView;
         #endregion
 
 
         #region PROPERTIES
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
+        public ObservableCollection<FileTreeNodeModel> FilesView { get { return _filesView; } set => this.RaiseAndSetIfChanged(ref _filesView, value); }
         public FileTreeNodeModel CurrentFile { get { return _currentFile; } set => this.RaiseAndSetIfChanged(ref _currentFile, value); }
         public string SelectPath 
         { 
@@ -95,6 +97,7 @@ namespace AvaloniaApplication1.ViewModels
                         CurrentFile = fileElement;
                         Files = FileManager.GetFiles(fileElement.Path);
                         SelectPath = fileElement.Path;
+                        FileManager.ModifyFilesState(Files, FilesView, CurrentFile);
                     }
                 });
                
@@ -113,6 +116,7 @@ namespace AvaloniaApplication1.ViewModels
                         CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
                         Files = FileManager.GetFiles(pathBackFolder);
                         SelectPath = pathBackFolder;
+                        FileManager.ModifyFilesState(Files, FilesView, CurrentFile);
                     }
                 });
             }
@@ -126,6 +130,12 @@ namespace AvaloniaApplication1.ViewModels
                 {
                     var files = (obj as MainWindowViewModel).Files;
                     var selectedFiles = FileManager.GetSelectedFiles(files);
+
+
+                    
+                    //var window = ((MainWindowViewModel)obj).View as Window;
+                    //window.Close();
+                    //CloseWindow?.Invoke();
                 });
             }
         }

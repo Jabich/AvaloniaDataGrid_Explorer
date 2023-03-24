@@ -34,6 +34,19 @@ namespace AvaloniaApplication1.Models
             }
             return selectedFiles;
         }
+        public static void ModifyFilesState(ObservableCollection<FileTreeNodeModel> Files, 
+                                            ObservableCollection<FileTreeNodeModel> FilesView,
+                                            FileTreeNodeModel CurrentFile)
+        {
+            string rootPathLinux = "/";
+            string rootpathWindows = "C:\\Program Files (x86)";
+
+            if(CurrentFile.Path != rootPathLinux)
+            {
+
+            }
+        }
+
     }
 }
 ////string directoryPath = "C:\\Temp\\MyFolder";

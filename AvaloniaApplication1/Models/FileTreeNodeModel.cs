@@ -43,6 +43,7 @@ namespace AvaloniaApplication1.Models
             HasChildren = isDirectory;
             _isChecked = false;
 
+
             if(isDirectory)
             {
                 _indent = new Thickness(0, 0, 0 , 0);
