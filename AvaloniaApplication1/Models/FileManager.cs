@@ -39,13 +39,21 @@ namespace AvaloniaApplication1.Models
                                             FileTreeNodeModel CurrentFile)
         {
             string rootPathLinux = "/";
-            string rootpathWindows = "C:\\Program Files (x86)";
+            string rootpathWindows = "C:\\";
+            string correntPath = CurrentFile.Path;
+
 
             if(CurrentFile.Path != rootPathLinux)
             {
 
             }
         }
+        //public ObservableCollection<FileTreeNodeModel> GetFilesInTreeWindows(ObservableCollection<FileTreeNodeModel> Files, 
+        //                                                                     FileTreeNodeModel CurrentFile)
+        //{
+        //    string rootPathWindows = "C:\\";
+
+        //}
 
     }
 }

@@ -31,9 +31,9 @@ namespace AvaloniaApplication1.ViewModels
     {
         public MainWindowViewModel()
         {
-            Files = FileManager.GetFiles("C:\\Program Files (x86)");
-            CurrentFile = new FileTreeNodeModel("C:\\Program Files (x86)", Directory.Exists("C:\\Program Files (x86)"));
-            SelectPath = "C:\\Program Files (x86)";
+            Files = FileManager.GetFiles("C:\\");
+            CurrentFile = new FileTreeNodeModel("C:\\", Directory.Exists("C:\\"));
+            SelectPath = "C:\\";
         }
 
         #region FIELDS
@@ -171,6 +171,7 @@ namespace AvaloniaApplication1.ViewModels
 
             public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
             {
+                var dawd = 4545;
                 if (values.Count == 2 &&
                 values[0] is bool isDirectory &&
                 values[1] is bool isExpanded)
