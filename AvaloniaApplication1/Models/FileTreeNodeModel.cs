@@ -81,10 +81,6 @@ namespace AvaloniaApplication1.Models
 
         //public int Indent => ModelIndexPath.Count - 1;
 
-        public string CHEKED
-        {
-            get => "true";
-        }
 
         public bool IsChecked 
         {
@@ -159,7 +155,7 @@ namespace AvaloniaApplication1.Models
         }
 
         public bool IsDirectory { get; }
-        public IReadOnlyList<FileTreeNodeModel> Children => _children ??= LoadChildren();
+        public ObservableCollection<FileTreeNodeModel> Children => _children ??= LoadChildren();
 
         private ObservableCollection<FileTreeNodeModel> LoadChildren()
         {

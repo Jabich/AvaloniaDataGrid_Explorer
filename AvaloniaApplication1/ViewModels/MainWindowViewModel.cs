@@ -31,9 +31,10 @@ namespace AvaloniaApplication1.ViewModels
     {
         public MainWindowViewModel()
         {
-            Files = FileManager.GetFiles("C:\\");
-            CurrentFile = new FileTreeNodeModel("C:\\", Directory.Exists("C:\\"));
-            SelectPath = "C:\\";
+            Files = FileManager.GetFiles("C:\\Program Files (x86)", ChangedPages);
+            CurrentFile = new FileTreeNodeModel("C:\\Program Files (x86)", Directory.Exists("C:\\Program Files (x86)"));
+            ChangedPages = new Dictionary<string, ObservableCollection<FileTreeNodeModel>>();
+            SelectPath = "C:\\Program Files (x86)";
         }
 
         #region FIELDS
@@ -42,10 +43,12 @@ namespace AvaloniaApplication1.ViewModels
         private FileTreeNodeModel? _currentFile;
         private string _selectPath;
         private ObservableCollection<FileTreeNodeModel>? _filesView;
+        private Dictionary<string, ObservableCollection<FileTreeNodeModel>> _changedPages;
         #endregion
 
 
         #region PROPERTIES
+        public Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages { get { return _changedPages; } set => this.RaiseAndSetIfChanged(ref _changedPages, value); }
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
         public ObservableCollection<FileTreeNodeModel> FilesView { get { return _filesView; } set => this.RaiseAndSetIfChanged(ref _filesView, value); }
         public FileTreeNodeModel CurrentFile { get { return _currentFile; } set => this.RaiseAndSetIfChanged(ref _currentFile, value); }
@@ -91,16 +94,20 @@ namespace AvaloniaApplication1.ViewModels
             {
                 return new ActionCommand((selectedFile) =>
                 {
+                    if (FileManager.CheckChangeFiles(Files))
+                    {
+                        FileManager.AddChangePages(ChangedPages, Files, CurrentFile);
+                    }
+
                     var fileElement = selectedFile as FileTreeNodeModel;
                     if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
                     {
                         CurrentFile = fileElement;
-                        Files = FileManager.GetFiles(fileElement.Path);
+                        Files = FileManager.GetFiles(fileElement.Path, ChangedPages);
                         SelectPath = fileElement.Path;
-                        FileManager.ModifyFilesState(Files, FilesView, CurrentFile);
+                        FilesView = Files;
                     }
                 });
-               
             }
         }
         public ICommand BackFileTree
@@ -109,14 +116,17 @@ namespace AvaloniaApplication1.ViewModels
             {
                 return new ActionCommand((object a) =>
                 {
+                    if (FileManager.CheckChangeFiles(Files))
+                    {
+                        FileManager.AddChangePages(ChangedPages, Files, CurrentFile);
+                    }
                     int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
                     if (countSeparators > 1)
                     {
                         string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
                         CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
-                        Files = FileManager.GetFiles(pathBackFolder);
+                        Files = FileManager.GetFiles(pathBackFolder,ChangedPages);
                         SelectPath = pathBackFolder;
-                        FileManager.ModifyFilesState(Files, FilesView, CurrentFile);
                     }
                 });
             }
@@ -129,7 +139,7 @@ namespace AvaloniaApplication1.ViewModels
                 return new ActionCommand((obj) =>
                 {
                     var files = (obj as MainWindowViewModel).Files;
-                    var selectedFiles = FileManager.GetSelectedFiles(files);
+                    //var selectedFiles = FileManager.GetSelectedFiles(files);
 
 
                     

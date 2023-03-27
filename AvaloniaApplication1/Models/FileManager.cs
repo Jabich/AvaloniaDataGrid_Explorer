@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,25 @@ namespace AvaloniaApplication1.Models
 {
     public class FileManager
     {
-        public static ObservableCollection<FileTreeNodeModel> GetFiles(string path)
+        /// <summary>
+        /// Возвращает коллекцию файлов 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static ObservableCollection<FileTreeNodeModel> GetFiles(string path, 
+        Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages=null)
         {
+            if(ChangedPages != null)
+            {
+                foreach(var item in ChangedPages) 
+                {
+                    if (item.Key == path)
+                    {
+                        return ChangedPages[path];
+                    }
+                   
+                }
+            }
             var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
             var filePaths = Directory.GetFileSystemEntries(path);
             foreach (var file in filePaths)
@@ -22,45 +40,47 @@ namespace AvaloniaApplication1.Models
 
             return outputCollectionFiles;
         }
-        public static ObservableCollection<FileTreeNodeModel> GetSelectedFiles(ObservableCollection<FileTreeNodeModel> files)
+
+        public static List<FileTreeNodeModel> GetSelectedFiles(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages)
         {
-            ObservableCollection<FileTreeNodeModel> selectedFiles = new ObservableCollection<FileTreeNodeModel>(); 
-            foreach (var file in files)
+            var SelectedFiles = new List<FileTreeNodeModel>();
+            foreach(var file in ChangedPages.Values)
             {
-                if(file.IsChecked == true)
-                {
-                    selectedFiles.Add(file);
-                }
+                
             }
-            return selectedFiles;
+
+
+            return SelectedFiles;
         }
-        public static void ModifyFilesState(ObservableCollection<FileTreeNodeModel> Files, 
-                                            ObservableCollection<FileTreeNodeModel> FilesView,
-                                            FileTreeNodeModel CurrentFile)
+
+        /// <summary>
+        /// Возвращает True если коллекция файлов была изменена, False если НЕ была изменена
+        /// </summary>
+        /// <param name="Files"></param>
+        /// <returns></returns>
+        public static bool CheckChangeFiles(ObservableCollection<FileTreeNodeModel> Files)
         {
-            string rootPathLinux = "/";
-            string rootpathWindows = "C:\\";
-            string correntPath = CurrentFile.Path;
-
-
-            if(CurrentFile.Path != rootPathLinux)
+            foreach(var file in Files)
             {
-
+                if (file.IsChecked != false)
+                    return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Добавляет в словарь измененные страницы 
+        /// </summary>
+        /// <param name="ChangedPages"></param>
+        public static void AddChangePages(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages, 
+            ObservableCollection<FileTreeNodeModel> Files, FileTreeNodeModel CurrentFile)
+        {
+            if (!ChangedPages.ContainsKey(CurrentFile.Path))
+            {
+                ChangedPages.Remove(CurrentFile.Path);
+                ChangedPages.Add(CurrentFile.Path, Files);
             }
         }
-        //public ObservableCollection<FileTreeNodeModel> GetFilesInTreeWindows(ObservableCollection<FileTreeNodeModel> Files, 
-        //                                                                     FileTreeNodeModel CurrentFile)
-        //{
-        //    string rootPathWindows = "C:\\";
-
-        //}
 
     }
 }
-////string directoryPath = "C:\\Temp\\MyFolder";
-//string[] fileNames = Directory.GetFiles(directoryPath);
-//List<string> filePaths = new List<string>();
-//foreach (string fileName in fileNames)
-//{
-//    filePaths.Add(Path.Combine(directoryPath, fileName));
-//}
+
