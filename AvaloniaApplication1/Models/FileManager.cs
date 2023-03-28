@@ -17,18 +17,18 @@ namespace AvaloniaApplication1.Models
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static ObservableCollection<FileTreeNodeModel> GetFiles(string path, 
-        Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages=null)
+        public static ObservableCollection<FileTreeNodeModel> GetFiles(string path,
+        Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages = null)
         {
-            if(ChangedPages != null)
+            if (ChangedPages != null)
             {
-                foreach(var item in ChangedPages) 
+                foreach (var item in ChangedPages)
                 {
                     if (item.Key == path)
                     {
                         return ChangedPages[path];
                     }
-                   
+
                 }
             }
             var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
@@ -44,9 +44,9 @@ namespace AvaloniaApplication1.Models
         public static List<FileTreeNodeModel> GetSelectedFiles(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages)
         {
             var SelectedFiles = new List<FileTreeNodeModel>();
-            foreach(var file in ChangedPages.Values)
+            foreach (var file in ChangedPages.Values)
             {
-                
+
             }
 
 
@@ -60,7 +60,7 @@ namespace AvaloniaApplication1.Models
         /// <returns></returns>
         public static bool CheckChangeFiles(ObservableCollection<FileTreeNodeModel> Files)
         {
-            foreach(var file in Files)
+            foreach (var file in Files)
             {
                 if (file.IsChecked != false)
                     return true;
@@ -71,7 +71,7 @@ namespace AvaloniaApplication1.Models
         /// Добавляет в словарь измененные страницы 
         /// </summary>
         /// <param name="ChangedPages"></param>
-        public static void AddChangePages(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages, 
+        public static void AddChangePages(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages,
             ObservableCollection<FileTreeNodeModel> Files, FileTreeNodeModel CurrentFile)
         {
             if (!ChangedPages.ContainsKey(CurrentFile.Path))
@@ -79,6 +79,42 @@ namespace AvaloniaApplication1.Models
                 ChangedPages.Remove(CurrentFile.Path);
                 ChangedPages.Add(CurrentFile.Path, Files);
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Files"></param>
+        public static Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangeChildren(ObservableCollection<FileTreeNodeModel> Files)
+        {
+            var changeChildrensDictionary = new Dictionary<string, ObservableCollection<FileTreeNodeModel>>();
+            foreach (var file in Files)
+            {
+                if (file.IsChecked == true && file.IsDirectory)
+                {
+                    foreach (var children in file.Children)
+                    {
+                        children.IsChecked = true;
+                        if (children.IsDirectory)
+                        {
+                            UpdatePropIsChecked(children.Children);
+                            changeChildrensDictionary.Add(children.Path, children.Children);
+                        }
+                    }
+                }
+            }
+            return changeChildrensDictionary;
+        }
+
+        static void UpdatePropIsChecked(ObservableCollection<FileTreeNodeModel> Files)
+        {
+            foreach (var file in Files)
+            {
+                file.IsChecked = true;
+            }
+        }
+        static void AddModifPagesToDictionary()
+        {
+
         }
 
     }

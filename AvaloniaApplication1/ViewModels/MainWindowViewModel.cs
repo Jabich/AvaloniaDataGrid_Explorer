@@ -97,6 +97,7 @@ namespace AvaloniaApplication1.ViewModels
                     if (FileManager.CheckChangeFiles(Files))
                     {
                         FileManager.AddChangePages(ChangedPages, Files, CurrentFile);
+                        var dsf = FileManager.ChangeChildren(Files);
                     }
 
                     var fileElement = selectedFile as FileTreeNodeModel;
@@ -119,6 +120,7 @@ namespace AvaloniaApplication1.ViewModels
                     if (FileManager.CheckChangeFiles(Files))
                     {
                         FileManager.AddChangePages(ChangedPages, Files, CurrentFile);
+                        var dfgdf = FileManager.ChangeChildren(Files);
                     }
                     int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
                     if (countSeparators > 1)
@@ -161,9 +163,11 @@ namespace AvaloniaApplication1.ViewModels
         }
         #endregion
 
+
         #region METHODS
 
         #endregion
+
 
         #region CONVERTERS 
         private class IconConverter : IMultiValueConverter
