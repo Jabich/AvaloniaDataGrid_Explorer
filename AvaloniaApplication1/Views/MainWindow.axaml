@@ -58,7 +58,7 @@
 				  Width="380"
 				 Height="320"
 				  Margin=" 0 10 0 0"
-				 Items="{Binding Files}"
+				 Items="{Binding FilesView}"
 				
 				 >
 			<i:Interaction.Behaviors>
