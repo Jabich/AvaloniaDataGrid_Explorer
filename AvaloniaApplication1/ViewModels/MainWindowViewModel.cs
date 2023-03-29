@@ -95,9 +95,10 @@ namespace AvaloniaApplication1.ViewModels
                     var fileElement = selectedFile as FileTreeNodeModel;
                     if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
                     {
-                        bool isSystem = (System.IO.File.GetAttributes("C:\\Program Files (x86)\\Google\\CrashReports") & FileAttributes.System) == FileAttributes.System;
+                        FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
+                        //bool isSystem = (System.IO.File.GetAttributes("C:\\Program Files (x86)\\Google\\CrashReports") & FileAttributes.System) == FileAttributes.System;
                         //var sdkljf = FileManager.SearchElementsInFileTree(Files, "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\it");
-                        FilesView = FileManager.SearchElementsInFileTree(Files, fileElement.Path);
+                        FilesView = FileManager.SearchElementsInFileTree(Files, fileElement.Path, "C:\\Program Files (x86)");
                         CurrentFile = fileElement;
                         SelectPath = fileElement.Path;
                     }
@@ -113,9 +114,11 @@ namespace AvaloniaApplication1.ViewModels
                     int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
                     if (countSeparators > 1)
                     {
+                        FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
                         string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
                         CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
-                        Files = FileManager.GetFiles(pathBackFolder);
+                        //Files = FileManager.GetFiles(pathBackFolder);
+                        FilesView = FileManager.SearchElementsInFileTree(Files, pathBackFolder, "C:\\Program Files (x86)");
                         SelectPath = pathBackFolder;
                     }
                 });
