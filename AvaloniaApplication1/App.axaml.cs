@@ -22,7 +22,6 @@ namespace AvaloniaApplication1
                     DataContext = new MainWindowViewModel(),
                 };
             }
-
             base.OnFrameworkInitializationCompleted();
         }
     }

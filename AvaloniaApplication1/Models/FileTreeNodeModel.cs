@@ -193,9 +193,9 @@ namespace AvaloniaApplication1.Models
                 _watcher.EnableRaisingEvents = true;
             }
             //catch
-            {
+            //{
 
-            }
+            //}
 
 
             if (result.Count == 0)

@@ -95,7 +95,7 @@ namespace AvaloniaApplication1.ViewModels
                     var fileElement = selectedFile as FileTreeNodeModel;
                     if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
                     {
-                        FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
+                        //FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
                         //bool isSystem = (System.IO.File.GetAttributes("C:\\Program Files (x86)\\Google\\CrashReports") & FileAttributes.System) == FileAttributes.System;
                         //var sdkljf = FileManager.SearchElementsInFileTree(Files, "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\it");
                         FilesView = FileManager.SearchElementsInFileTree(Files, fileElement.Path, "C:\\Program Files (x86)");
@@ -114,7 +114,7 @@ namespace AvaloniaApplication1.ViewModels
                     int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
                     if (countSeparators > 1)
                     {
-                        FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
+                        //FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
                         string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
                         CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
                         //Files = FileManager.GetFiles(pathBackFolder);
@@ -125,6 +125,18 @@ namespace AvaloniaApplication1.ViewModels
             }
         }
 
+        public ICommand ClickCheckBoxCommand
+        {
+            get
+            {
+                return new ActionCommand((obj) =>
+                {
+                    var file = obj as FileTreeNodeModel;
+                    FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
+                    FileManager.ChangeChildrenCollection(file, Files);
+                });
+            }
+        }
         public ICommand FileSelection
         {
             get
@@ -135,7 +147,6 @@ namespace AvaloniaApplication1.ViewModels
                     //var selectedFiles = FileManager.GetSelectedFiles(files);
 
 
-                    
                     //var window = ((MainWindowViewModel)obj).View as Window;
                     //window.Close();
                     //CloseWindow?.Invoke();
@@ -176,7 +187,6 @@ namespace AvaloniaApplication1.ViewModels
 
             public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
             {
-                var dawd = 4545;
                 if (values.Count == 2 &&
                 values[0] is bool isDirectory &&
                 values[1] is bool isExpanded)

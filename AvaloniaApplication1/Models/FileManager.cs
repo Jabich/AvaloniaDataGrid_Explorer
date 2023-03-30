@@ -112,8 +112,97 @@ namespace AvaloniaApplication1.Models
         public static void ChangeFileSource(ObservableCollection<FileTreeNodeModel> Files, ObservableCollection<FileTreeNodeModel> FilesView, FileTreeNodeModel CurrentFile)
         {
             var folderToChange =  SearchElementsInFileTree(Files, CurrentFile.Path, "C:\\Program Files (x86)");
-            folderToChange = FilesView;
+            //folderToChange = FilesView;
+            foreach (var (file, fileView) in folderToChange.Zip(FilesView, (file, fileView) => (file, fileView)))
+            {
+                file.IsChecked = fileView.IsChecked;
+                //if (item1.IsChecked)
+                //{
+                //    ChangeChildrenState(item1.Children);
+                //}
+                //else
+                //{
+                //}
+
+                //ChangeChildrenState(file.Children,file.IsChecked);
+                
+            }
+
         }
+
+        //public static void ChangeChildrenState(ObservableCollection<FileTreeNodeModel> FilesAndChildrens)
+        //{
+        //    foreach (var file in FilesAndChildrens)
+        //    {
+        //        file.IsChecked = true;
+        //        if (Directory.Exists(file.Path))
+        //            ChangeChildrenState(file.Children);
+
+        //    }
+        //}
+
+        //public static void ChangeChildrenState(ObservableCollection<FileTreeNodeModel> FilesAndChildrens, bool RootFolderIsChecked)
+        //{
+        //    if (RootFolderIsChecked)
+        //    {
+        //        foreach (var file in FilesAndChildrens)
+        //        {
+        //            file.IsChecked = true;
+        //            if (Directory.Exists(file.Path))
+        //                ChangeChildrenState(file.Children,RootFolderIsChecked);
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var file in FilesAndChildrens)
+        //        {
+        //            file.IsChecked = false;
+        //            if (Directory.Exists(file.Path))
+        //                ChangeChildrenState(file.Children, RootFolderIsChecked);
+        //        }
+        //    }
+
+        //}
+
+
+        public static void ChangeChildrenCollection(FileTreeNodeModel targetFolder, ObservableCollection<FileTreeNodeModel> Files)
+        {
+            if (Directory.Exists(targetFolder.Path))
+            {
+                var targetTreeFilesChanges = SearchElementsInFileTree(Files, targetFolder.Path, "C:\\Program Files (x86)");
+                RecursivChangePropIsChecked(targetTreeFilesChanges, targetFolder.IsChecked);
+            }
+        }
+        public static void RecursivChangePropIsChecked(ObservableCollection<FileTreeNodeModel> FilesAndChildren, bool IsChecked)
+        {
+            if (IsChecked)
+            {
+                foreach (var  file in FilesAndChildren)
+                {
+                    file.IsChecked = true;
+                    if (Directory.Exists(file.Path))
+                    {
+                        RecursivChangePropIsChecked(file.Children, IsChecked);
+                    } 
+                        
+                }
+            }
+            else
+            {
+                foreach (var file in FilesAndChildren)
+                {
+                    file.IsChecked = false;
+                    if (Directory.Exists(file.Path))
+                    {
+                        RecursivChangePropIsChecked(file.Children, IsChecked);
+                    }
+
+                }
+            }
+        }
+
+
     }
 }
 

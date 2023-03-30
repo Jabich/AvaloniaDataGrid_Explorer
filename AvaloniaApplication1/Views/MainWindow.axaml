@@ -71,7 +71,14 @@
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<StackPanel Orientation="Horizontal" Height="25">
-						<CheckBox IsThreeState="False" IsChecked="{Binding IsChecked, Mode=TwoWay}" ></CheckBox>
+						<CheckBox IsThreeState="False" IsChecked="{Binding IsChecked, Mode=TwoWay}" >
+							<i:Interaction.Behaviors >
+								<ia:EventTriggerBehavior EventName ="Click">
+									<ia:InvokeCommandAction Command="{Binding DataContext.ClickCheckBoxCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}} "
+															CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=DataContext}"/>
+								</ia:EventTriggerBehavior>
+							</i:Interaction.Behaviors>
+						</CheckBox>
 
 						<Image Margin="0 0 0 0"
                                    VerticalAlignment="Bottom"
