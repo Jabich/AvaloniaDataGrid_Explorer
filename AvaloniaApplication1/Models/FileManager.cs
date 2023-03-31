@@ -1,13 +1,8 @@
-﻿using DynamicData;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AvaloniaApplication1.Models
 {
@@ -39,6 +34,78 @@ namespace AvaloniaApplication1.Models
             }
             return SelectedFiles;
         }
+        #region Методы для поиска и изменения коллекции источника файлов
+        ///// <summary>
+        ///// Метод для поиска и возврата папок в файловом дереве. 
+        ///// </summary>
+        ///// <param name="Files"></param>
+        ///// <param name="Path"></param>
+        ///// <param name="PathRootDirectory"></param>
+        ///// <returns></returns>
+        //public static ObservableCollection<FileTreeNodeModel> SearchElementsInFileTree(ObservableCollection<FileTreeNodeModel> Files, string Path, string PathRootDirectory)
+        //{
+        //    string[] partsPath = Path.Split("\\");
+        //    string path = "";
+        //    int indexPart = 0;
+        //    if(Path == PathRootDirectory)
+        //    {
+        //        return Files;
+        //    }
+        //    foreach (var part in partsPath)
+        //    {
+        //        if (PathRootDirectory + "\\" != path)
+        //        {
+        //            path += part + "\\";
+        //            indexPart++;
+        //        }
+        //        else
+        //        {
+        //            return Iterate(Files, path, partsPath, indexPart);
+        //        }
+
+        //    }
+
+        //    return new ObservableCollection<FileTreeNodeModel>();
+        //}
+        ///// <summary>
+        ///// Рекурсивный метод, проходит по коллекции файлов. Возвращает вложенную коллекцию.
+        ///// </summary>
+        ///// <param name="TargetFolder"></param>
+        ///// <param name="TargetPath"></param>
+        ///// <param name="PartsPath"></param>
+        ///// <param name="IndexPartPath"></param>
+        ///// <returns></returns>
+        //static ObservableCollection<FileTreeNodeModel> Iterate(ObservableCollection<FileTreeNodeModel> TargetFolder, string TargetPath, string[] PartsPath, int IndexPartPath)
+        //{
+        //    if (IndexPartPath == PartsPath.Length-1)
+        //    {
+        //        TargetPath += PartsPath[IndexPartPath]+"\\";
+        //        foreach (var file in TargetFolder)
+        //        {
+        //            if (file.Path + "\\" == TargetPath)
+        //                return file.Children;
+        //        }
+        //        return new ObservableCollection<FileTreeNodeModel>();
+        //    }
+        //    else
+        //    {
+        //        TargetPath += PartsPath[IndexPartPath] + "\\";
+        //        IndexPartPath++;
+        //        foreach (var file in TargetFolder)
+        //        {
+        //            if (TargetPath == file.Path + "\\")
+        //            {
+        //                //Path = PartsPath[IndexPartPath] + "\\";
+        //                return Iterate(file.Children, TargetPath, PartsPath, IndexPartPath);
+        //            }
+        //        }
+        //        return new ObservableCollection<FileTreeNodeModel>();
+        //    }
+        //}
+        #endregion
+
+
+
         /// <summary>
         /// Метод для поиска и возврата папок в файловом дереве. 
         /// </summary>
@@ -46,14 +113,17 @@ namespace AvaloniaApplication1.Models
         /// <param name="Path"></param>
         /// <param name="PathRootDirectory"></param>
         /// <returns></returns>
-        public static ObservableCollection<FileTreeNodeModel> SearchElementsInFileTree(ObservableCollection<FileTreeNodeModel> Files, string Path, string PathRootDirectory)
+        public static T SearchElementsInFileTree<T>(ObservableCollection<FileTreeNodeModel> files, string Path, string PathRootDirectory)
         {
             string[] partsPath = Path.Split("\\");
             string path = "";
             int indexPart = 0;
-            if(Path == PathRootDirectory)
+            if (Path == PathRootDirectory)
             {
-                return Files;
+                if (typeof(T) == typeof(ObservableCollection<FileTreeNodeModel>))
+                {
+                    return (T)(object)files;
+                }
             }
             foreach (var part in partsPath)
             {
@@ -62,14 +132,18 @@ namespace AvaloniaApplication1.Models
                     path += part + "\\";
                     indexPart++;
                 }
-                else
+                else if (typeof(T) == typeof(ObservableCollection<FileTreeNodeModel>))
                 {
-                    return Iterate(Files, path, partsPath, indexPart);
+                    return (T)(object)Iterate(files, path, partsPath, indexPart).Children;
+                }
+                else
+
+                {
+                    return (T)(object)Iterate(files, path, partsPath, indexPart);
                 }
 
             }
-           
-            return new ObservableCollection<FileTreeNodeModel>();
+            return (T)(object)Iterate(files, path, partsPath, indexPart);
         }
         /// <summary>
         /// Рекурсивный метод, проходит по коллекции файлов. Возвращает вложенную коллекцию.
@@ -79,17 +153,17 @@ namespace AvaloniaApplication1.Models
         /// <param name="PartsPath"></param>
         /// <param name="IndexPartPath"></param>
         /// <returns></returns>
-        static ObservableCollection<FileTreeNodeModel> Iterate(ObservableCollection<FileTreeNodeModel> TargetFolder, string TargetPath, string[] PartsPath, int IndexPartPath)
+        static FileTreeNodeModel Iterate(ObservableCollection<FileTreeNodeModel> TargetFolder, string TargetPath, string[] PartsPath, int IndexPartPath)
         {
-            if (IndexPartPath == PartsPath.Length-1)
+            if (IndexPartPath == PartsPath.Length - 1)
             {
-                TargetPath += PartsPath[IndexPartPath]+"\\";
+                TargetPath += PartsPath[IndexPartPath] + "\\";
                 foreach (var file in TargetFolder)
                 {
                     if (file.Path + "\\" == TargetPath)
-                        return file.Children;
+                        return file;
                 }
-                return new ObservableCollection<FileTreeNodeModel>();
+                return null;
             }
             else
             {
@@ -103,105 +177,95 @@ namespace AvaloniaApplication1.Models
                         return Iterate(file.Children, TargetPath, PartsPath, IndexPartPath);
                     }
                 }
-                return new ObservableCollection<FileTreeNodeModel>();
+                return null;
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        public static void ChangeFileSource(ObservableCollection<FileTreeNodeModel> Files, ObservableCollection<FileTreeNodeModel> FilesView, FileTreeNodeModel CurrentFile)
+        /// <param name="SelectedElement"></param>
+        /// <param name="Files"></param>
+        /// <param name="SelectedFiles"></param>
+        public static void ChangeFileSource(FileTreeNodeModel SelectedElement, ObservableCollection<FileTreeNodeModel> Files,List<string> SelectedFiles = null)
         {
-            var folderToChange =  SearchElementsInFileTree(Files, CurrentFile.Path, "C:\\Program Files (x86)");
-            //folderToChange = FilesView;
-            foreach (var (file, fileView) in folderToChange.Zip(FilesView, (file, fileView) => (file, fileView)))
+            CheckAndChangedTreeParentChecked(Files, SelectedElement);
+            if (Directory.Exists(SelectedElement.Path))
             {
-                file.IsChecked = fileView.IsChecked;
-                //if (item1.IsChecked)
-                //{
-                //    ChangeChildrenState(item1.Children);
-                //}
-                //else
-                //{
-                //}
-
-                //ChangeChildrenState(file.Children,file.IsChecked);
-                
+                var SourceFileElement = SearchElementsInFileTree<FileTreeNodeModel>(Files, SelectedElement.Path, "C:\\Program Files (x86)");
+                SourceFileElement.IsChecked = SelectedElement.IsChecked;
+                RecursiveChangePropIsChecked(SourceFileElement.Children, SelectedElement.IsChecked);
             }
-
-        }
-
-        //public static void ChangeChildrenState(ObservableCollection<FileTreeNodeModel> FilesAndChildrens)
-        //{
-        //    foreach (var file in FilesAndChildrens)
-        //    {
-        //        file.IsChecked = true;
-        //        if (Directory.Exists(file.Path))
-        //            ChangeChildrenState(file.Children);
-
-        //    }
-        //}
-
-        //public static void ChangeChildrenState(ObservableCollection<FileTreeNodeModel> FilesAndChildrens, bool RootFolderIsChecked)
-        //{
-        //    if (RootFolderIsChecked)
-        //    {
-        //        foreach (var file in FilesAndChildrens)
-        //        {
-        //            file.IsChecked = true;
-        //            if (Directory.Exists(file.Path))
-        //                ChangeChildrenState(file.Children,RootFolderIsChecked);
-
-        //        }
-        //    }
-        //    else
-        //    {
-        //        foreach (var file in FilesAndChildrens)
-        //        {
-        //            file.IsChecked = false;
-        //            if (Directory.Exists(file.Path))
-        //                ChangeChildrenState(file.Children, RootFolderIsChecked);
-        //        }
-        //    }
-
-        //}
-
-
-        public static void ChangeChildrenCollection(FileTreeNodeModel targetFolder, ObservableCollection<FileTreeNodeModel> Files)
-        {
-            if (Directory.Exists(targetFolder.Path))
+            else
             {
-                var targetTreeFilesChanges = SearchElementsInFileTree(Files, targetFolder.Path, "C:\\Program Files (x86)");
-                RecursivChangePropIsChecked(targetTreeFilesChanges, targetFolder.IsChecked);
+                var targetTreeFilesChanges = SearchElementsInFileTree<FileTreeNodeModel>(Files, SelectedElement.Path, "C:\\Program Files (x86)");
+                targetTreeFilesChanges.IsChecked = SelectedElement.IsChecked;
             }
         }
-        public static void RecursivChangePropIsChecked(ObservableCollection<FileTreeNodeModel> FilesAndChildren, bool IsChecked)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="FilesAndChildren"></param>
+        /// <param name="IsChecked"></param>
+        static void RecursiveChangePropIsChecked(ObservableCollection<FileTreeNodeModel> FilesAndChildren, bool IsChecked, List<string> SelectedFiles = null)
         {
-            if (IsChecked)
+            foreach (var file in FilesAndChildren)
             {
-                foreach (var  file in FilesAndChildren)
+                file.IsChecked = IsChecked;
+                if (Directory.Exists(file.Path))
                 {
-                    file.IsChecked = true;
-                    if (Directory.Exists(file.Path))
-                    {
-                        RecursivChangePropIsChecked(file.Children, IsChecked);
-                    } 
-                        
+                    RecursiveChangePropIsChecked(file.Children, IsChecked);
+                }
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Files"></param>
+        /// <param name="SelectedFile"></param>
+        static void CheckAndChangedTreeParentChecked(ObservableCollection<FileTreeNodeModel> Files, FileTreeNodeModel SelectedFile, List<string> SelectedFiles = null)
+        {
+            if (SelectedFile.IsChecked == false)
+            {
+                string awdaw = "";
+                string pathParent = SelectedFile.Path;
+                int quantityPartsOfPath = SelectedFile.Path.Count(n => n == '\\');
+                for (int i = 0; i < quantityPartsOfPath - 2; i++)
+                {
+                    pathParent = pathParent.Substring(0, pathParent.LastIndexOf("\\"));
+                    //var a  = SearchElementsInFileTree<FileTreeNodeModel>(Files, pathParent, "C:\\Program Files (x86)").IsChecked = false;
+                    var targetTreeFilesChanges = SearchElementsInFileTree<FileTreeNodeModel>(Files, pathParent, "C:\\Program Files (x86)");
+                    targetTreeFilesChanges.IsChecked = false;
                 }
             }
             else
             {
-                foreach (var file in FilesAndChildren)
-                {
-                    file.IsChecked = false;
-                    if (Directory.Exists(file.Path))
-                    {
-                        RecursivChangePropIsChecked(file.Children, IsChecked);
-                    }
-
-                }
+                CheckAndChangeParentFolder(Files, SelectedFile);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Files"></param>
+        /// <param name="SelectFile"></param>
+        static void CheckAndChangeParentFolder(ObservableCollection<FileTreeNodeModel> Files, FileTreeNodeModel SelectFile, List<string> SelectedFiles = null)
+        {
+            var pathParent = SelectFile.Path.Substring(0, SelectFile.Path.LastIndexOf("\\"));
+            var targetTreeFilesChanges = SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(Files, pathParent, "C:\\Program Files (x86)");
+            int countCheckedFiles = 0;
+            foreach (var file in targetTreeFilesChanges)
+            {
+                countCheckedFiles = file.IsChecked ==false ? +1 : countCheckedFiles;
+            }
+            if(countCheckedFiles == 0)
+            {
+                var parentFile = SearchElementsInFileTree<FileTreeNodeModel>(Files, pathParent, "C:\\Program Files (x86)");
+                parentFile.IsChecked = true;
+            }
+        }
+        static void FillingListSelectedElement(FileTreeNodeModel SelectedFile, List<string> SelectedFiles = null)
+        {
+             //SelectedFile.IsChecked == true ? SelectedFiles.Add(SelectedFile.IsChecked)
+        }
 
     }
 }

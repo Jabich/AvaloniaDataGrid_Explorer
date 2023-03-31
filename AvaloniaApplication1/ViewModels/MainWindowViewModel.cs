@@ -1,29 +1,17 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data.Converters;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using AvaloniaApplication1.Models;
 using AvaloniaApplication1.ViewModels.Commands;
-using AvaloniaApplication1.Views;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Windows.Input;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
-using System.Drawing.Text;
-using System.IO;
-using System.Reactive.Linq;
-using Avalonia.Data.Converters;
-using Avalonia.Platform;
-using Avalonia;
-using System.Text.Json.Serialization;
 using System.Globalization;
-using Avalonia.Media.Imaging;
-using Avalonia.Interactivity;
-using Prism.Commands;
-using static System.Net.WebRequestMethods;
-using Avalonia.Controls.Shapes;
-using Avalonia.Styling;
-using System.Diagnostics;
+using System.IO;
+using System.Windows.Input;
 
 namespace AvaloniaApplication1.ViewModels
 {
@@ -47,15 +35,15 @@ namespace AvaloniaApplication1.ViewModels
 
 
         #region PROPERTIES
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
         public ObservableCollection<FileTreeNodeModel> FilesView { get { return _filesView; } set => this.RaiseAndSetIfChanged(ref _filesView, value); }
         public FileTreeNodeModel CurrentFile { get { return _currentFile; } set => this.RaiseAndSetIfChanged(ref _currentFile, value); }
-        public string SelectPath 
-        { 
-            get 
-            {
-                return _selectPath;
-            }
+        public string SelectPath
+        {
+            get => _selectPath;
             set => this.RaiseAndSetIfChanged(ref _selectPath, value);
         }
         public static IMultiValueConverter FileIconConverter
@@ -86,23 +74,21 @@ namespace AvaloniaApplication1.ViewModels
 
 
         #region COMMANDS
-        public ICommand ForwardFileTree
+        public void ForwardFileTree(FileTreeNodeModel selectedFile)
         {
-            get
+            if (Directory.Exists(selectedFile.Path))
             {
-                return new ActionCommand((selectedFile) =>
+                try 
                 {
-                    var fileElement = selectedFile as FileTreeNodeModel;
-                    if (fileElement is FileTreeNodeModel && Directory.Exists(fileElement.Path))
-                    {
-                        //FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
-                        //bool isSystem = (System.IO.File.GetAttributes("C:\\Program Files (x86)\\Google\\CrashReports") & FileAttributes.System) == FileAttributes.System;
-                        //var sdkljf = FileManager.SearchElementsInFileTree(Files, "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\it");
-                        FilesView = FileManager.SearchElementsInFileTree(Files, fileElement.Path, "C:\\Program Files (x86)");
-                        CurrentFile = fileElement;
-                        SelectPath = fileElement.Path;
-                    }
-                });
+                    FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(Files, selectedFile.Path, "C:\\Program Files (x86)");
+                }
+                catch
+                {
+                    FilesView = new ObservableCollection<FileTreeNodeModel>() { };
+                }
+
+                CurrentFile = selectedFile;
+                SelectPath = selectedFile.Path;
             }
         }
         public ICommand BackFileTree
@@ -113,12 +99,17 @@ namespace AvaloniaApplication1.ViewModels
                 {
                     int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
                     if (countSeparators > 1)
-                    {
-                        //FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
+                    { 
                         string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
                         CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
-                        //Files = FileManager.GetFiles(pathBackFolder);
-                        FilesView = FileManager.SearchElementsInFileTree(Files, pathBackFolder, "C:\\Program Files (x86)");
+                        try
+                        {
+                            FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(Files, pathBackFolder, "C:\\Program Files (x86)");
+                        }
+                        catch
+                        {
+                            FilesView = new ObservableCollection<FileTreeNodeModel>(){ };
+                        }
                         SelectPath = pathBackFolder;
                     }
                 });
@@ -132,8 +123,15 @@ namespace AvaloniaApplication1.ViewModels
                 return new ActionCommand((obj) =>
                 {
                     var file = obj as FileTreeNodeModel;
-                    FileManager.ChangeFileSource(Files, FilesView, CurrentFile);
-                    FileManager.ChangeChildrenCollection(file, Files);
+                    try
+                    {
+                        FileManager.ChangeFileSource(file, Files);
+                    }
+                    catch
+                    {
+
+                    }
+              
                 });
             }
         }
@@ -144,12 +142,6 @@ namespace AvaloniaApplication1.ViewModels
                 return new ActionCommand((obj) =>
                 {
                     var files = (obj as MainWindowViewModel).Files;
-                    //var selectedFiles = FileManager.GetSelectedFiles(files);
-
-
-                    //var window = ((MainWindowViewModel)obj).View as Window;
-                    //window.Close();
-                    //CloseWindow?.Invoke();
                 });
             }
         }
