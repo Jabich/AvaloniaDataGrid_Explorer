@@ -64,7 +64,7 @@
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction Command="{Binding GoToFolder}"
-											CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=DataContext}"/>
+											CommandParameter="{Binding ElementName=myListBox, Path=SelectedItem}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			

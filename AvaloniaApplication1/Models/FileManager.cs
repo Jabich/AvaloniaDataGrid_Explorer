@@ -37,16 +37,18 @@ namespace AvaloniaApplication1.Models
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static ObservableCollection<FileTreeNodeModel> GetFileTree(string path)
-        {
-            var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
-            var filePaths = Directory.GetFileSystemEntries(path);
-            foreach (var file in filePaths)
-            {
-                outputCollectionFiles.Add(new FileTreeNodeModel(file, ((File.GetAttributes(file) & FileAttributes.Directory) == FileAttributes.Directory)));
-            }
-            return outputCollectionFiles;
-        }
+       
+
+        //public static ObservableCollection<FileTreeNodeModel> GetFileTree(string path)
+        //{
+        //    var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
+        //    var filePaths = Directory.GetFileSystemEntries(path);
+        //    foreach (var file in filePaths)
+        //    {
+        //        outputCollectionFiles.Add(new FileTreeNodeModel(file, ((File.GetAttributes(file) & FileAttributes.Directory) == FileAttributes.Directory)));
+        //    }
+        //    return outputCollectionFiles;
+        //}
 
         public static List<FileTreeNodeModel> GetSelectedFiles(Dictionary<string, ObservableCollection<FileTreeNodeModel>> ChangedPages)
         {
@@ -128,6 +130,14 @@ namespace AvaloniaApplication1.Models
         #endregion
 
 
+        #region Новая реализация
+        //public static FileTreeNodeModel SearchElementInFileTree(ObservableCollection<FileTreeNodeModel> fileTree, FileTreeNodeModel)
+        //{
+        //    var file = fileTree.AsEnumerable().Descendants
+
+        //}
+        #endregion
+
 
         /// <summary>
         /// Метод для поиска и возврата папок в файловом дереве. 
@@ -136,14 +146,42 @@ namespace AvaloniaApplication1.Models
         /// <param name="Path"></param>
         /// <param name="PathRootDirectory"></param>
         /// <returns></returns>
+
+        //public static T SearchElementsInFileTree<T>(ObservableCollection<FileTreeNodeModel> files, string Path, string PathRootDirectory)
+        //{
+        //    string[] partsPath = Path.Split("\\");
+        //    string path = "";
+        //    int indexPart = 0;
+        //    if (Path == PathRootDirectory)
+        //    {
+        //        if (typeof(T) == typeof(ObservableCollection<FileTreeNodeModel>))
+        //        {
+        //            return (T)(object)files;
+        //        }
+        //    }
+        //    foreach (var part in partsPath)
+        //    {
+        //        if (PathRootDirectory + "\\" != path)
+        //        {
+        //            path += part + "\\";
+        //            indexPart++;
+        //        }
+        //        else if (typeof(T) == typeof(ObservableCollection<FileTreeNodeModel>))
+        //        {
+        //            return (T)(object)Iterate(files, path, partsPath, indexPart).Children;
+        //        }
+        //        else
+
+        //        {
+        //            return (T)(object)Iterate(files, path, partsPath, indexPart);
+        //        }
+
+        //    }
+        //    return (T)(object)Iterate(files, path, partsPath, indexPart);
+        //}
+
         public static T SearchElementsInFileTree<T>(ObservableCollection<FileTreeNodeModel> files, string Path, string PathRootDirectory)
         {
-   //         var a = files.FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a") ??
-   //files.SelectMany(f => f.Children)
-   //        .FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a");
-
-
-
             string[] partsPath = Path.Split("\\");
             string path = "";
             int indexPart = 0;
@@ -174,6 +212,7 @@ namespace AvaloniaApplication1.Models
             }
             return (T)(object)Iterate(files, path, partsPath, indexPart);
         }
+
         /// <summary>
         /// Рекурсивный метод, проходит по коллекции файлов. Возвращает вложенную коллекцию.
         /// </summary>
@@ -187,11 +226,12 @@ namespace AvaloniaApplication1.Models
             if (IndexPartPath == PartsPath.Length - 1)
             {
                 TargetPath += PartsPath[IndexPartPath] + "\\";
-                foreach (var file in TargetFolder)
-                {
-                    if (file.Path + "\\" == TargetPath)
-                        return file;
-                }
+                return TargetFolder.FirstOrDefault(file => file.Path + "\\" == TargetPath);
+                //foreach (var file in TargetFolder)
+                //{
+                //    if (file.Path + "\\" == TargetPath)
+                //        return file;
+                //}
                 return null;
             }
             else

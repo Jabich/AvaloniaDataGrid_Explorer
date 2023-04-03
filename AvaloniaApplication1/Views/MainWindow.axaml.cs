@@ -15,13 +15,5 @@ namespace AvaloniaApplication1.Views
         {
             AvaloniaXamlLoader.Load(this);
         }
-        //private void DoubleTapped(object sender, RoutedEventArgs e)
-        //{
-        //    //var a = sender as FileTreeNodeModel;
-        //    if (sender is DataGrid)
-        //    {
-        //        new Window1().Show();
-        //    }
-        //}
     }
 }

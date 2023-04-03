@@ -17,10 +17,10 @@ namespace AvaloniaApplication1.ViewModels
     {
         public MainWindowViewModel()
         {
-            FileTree = FileManager.GetFileTree(rootFolder);
+            FileTree = new FileTreeNodeModel(rootFolder, Directory.Exists(rootFolder)).Children;
             CurrentFolder = new FileTreeNodeModel(rootFolder, Directory.Exists(rootFolder));
             PathSelectedFolder = rootFolder;
-            FilesView = FileManager.GetFileTree(rootFolder);
+            FilesView = new FileTreeNodeModel(rootFolder, Directory.Exists(rootFolder)).Children;
         }
 
         #region FIELDS
