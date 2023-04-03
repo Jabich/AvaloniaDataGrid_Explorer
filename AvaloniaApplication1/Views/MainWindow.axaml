@@ -27,7 +27,7 @@
                     >
 			<Button Width="25"
 					Height="25"
-					Command="{Binding BackFileTree}">
+					Command="{Binding GoBackFolder}">
 				<Button.Styles>
 					<Style Selector="Button">
 						<Setter Property="Template">
@@ -45,7 +45,7 @@
                  Margin="5"
                  Height="10"
                  VerticalAlignment="Top"
-				 Text="{Binding SelectPath}"
+				 Text="{Binding PathSelectedFolder}"
 				 IsReadOnly="True"
             >
 
@@ -63,8 +63,8 @@
 				 >
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction Command="{Binding ForwardFileTree}"
-											CommandParameter="{Binding ElementName=myListBox, Path=SelectedItem}"/>
+					<ia:InvokeCommandAction Command="{Binding GoToFolder}"
+											CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=DataContext}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			
@@ -74,7 +74,7 @@
 						<CheckBox IsThreeState="False" IsChecked="{Binding IsChecked, Mode=TwoWay}" >
 							<i:Interaction.Behaviors >
 								<ia:EventTriggerBehavior EventName ="Click">
-									<ia:InvokeCommandAction Command="{Binding DataContext.ClickCheckBoxCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}} "
+									<ia:InvokeCommandAction Command="{Binding DataContext.SelectFile, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}} "
 															CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=DataContext}"/>
 								</ia:EventTriggerBehavior>
 							</i:Interaction.Behaviors>
@@ -187,8 +187,8 @@
                     Height="30"
                     Content="ОК"
                     HorizontalContentAlignment="Center"
-					Command="{Binding FileSelection}"
-					CommandParameter="{Binding}"
+					Command="{Binding GenerateAndSaveFileList}"
+					CommandParameter="{Binding ElementName=SelectFilesForm}"
 					>
 			</Button>
 			<Button Width="100"

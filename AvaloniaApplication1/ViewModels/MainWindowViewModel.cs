@@ -4,14 +4,12 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using AvaloniaApplication1.Models;
-using AvaloniaApplication1.ViewModels.Commands;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Windows.Input;
 
 namespace AvaloniaApplication1.ViewModels
 {
@@ -19,33 +17,27 @@ namespace AvaloniaApplication1.ViewModels
     {
         public MainWindowViewModel()
         {
-            Files = FileManager.GetFiles("C:\\Program Files (x86)");
-            CurrentFile = new FileTreeNodeModel("C:\\Program Files (x86)", Directory.Exists("C:\\Program Files (x86)"));
-            SelectPath = "C:\\Program Files (x86)";
-            FilesView = FileManager.GetFiles("C:\\Program Files (x86)");
+            FileTree = FileManager.GetFileTree(rootFolder);
+            CurrentFolder = new FileTreeNodeModel(rootFolder, Directory.Exists(rootFolder));
+            PathSelectedFolder = rootFolder;
+            FilesView = FileManager.GetFileTree(rootFolder);
         }
 
         #region FIELDS
+        private static string rootFolder = "C:\\Program Files (x86)";
         private static IconConverter? s_iconConverter;
-        private ObservableCollection<FileTreeNodeModel>? _files;
-        private FileTreeNodeModel? _currentFile;
-        private string _selectPath;
+        private ObservableCollection<FileTreeNodeModel>? _fileTree;
+        private FileTreeNodeModel? _currentFolder;
+        private string _pathSelectedFolder;
         private ObservableCollection<FileTreeNodeModel>? _filesView;
         #endregion
 
 
         #region PROPERTIES
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection<FileTreeNodeModel> Files { get { return _files; } set => this.RaiseAndSetIfChanged(ref _files, value); }
-        public ObservableCollection<FileTreeNodeModel> FilesView { get { return _filesView; } set => this.RaiseAndSetIfChanged(ref _filesView, value); }
-        public FileTreeNodeModel CurrentFile { get { return _currentFile; } set => this.RaiseAndSetIfChanged(ref _currentFile, value); }
-        public string SelectPath
-        {
-            get => _selectPath;
-            set => this.RaiseAndSetIfChanged(ref _selectPath, value);
-        }
+        public ObservableCollection<FileTreeNodeModel> FileTree { get => _fileTree; set => this.RaiseAndSetIfChanged(ref _fileTree, value); }
+        public ObservableCollection<FileTreeNodeModel> FilesView { get => _filesView; set => this.RaiseAndSetIfChanged(ref _filesView, value); }
+        public FileTreeNodeModel CurrentFolder { get => _currentFolder; set => this.RaiseAndSetIfChanged(ref _currentFolder, value); }
+        public string PathSelectedFolder { get => _pathSelectedFolder; set => this.RaiseAndSetIfChanged(ref _pathSelectedFolder, value); }
         public static IMultiValueConverter FileIconConverter
         {
             get
@@ -74,94 +66,43 @@ namespace AvaloniaApplication1.ViewModels
 
 
         #region COMMANDS
-        public void ForwardFileTree(FileTreeNodeModel selectedFile)
+        public void TestCommand(FileTreeNodeModel selectedFile)
+        {
+
+        }
+        public void GoToFolder(FileTreeNodeModel selectedFile)
         {
             if (Directory.Exists(selectedFile.Path))
             {
-                try 
-                {
-                    FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(Files, selectedFile.Path, "C:\\Program Files (x86)");
-                }
-                catch
-                {
-                    FilesView = new ObservableCollection<FileTreeNodeModel>() { };
-                }
-
-                CurrentFile = selectedFile;
-                SelectPath = selectedFile.Path;
+                FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(FileTree, selectedFile.Path, rootFolder);
+                CurrentFolder = selectedFile;
+                PathSelectedFolder = selectedFile.Path;
             }
         }
-        public ICommand BackFileTree
+        public void GoBackFolder(FileTreeNodeModel selectedFile)
         {
-            get
+            int countSeparators = CurrentFolder.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
+            if (countSeparators > 1)
             {
-                return new ActionCommand((object a) =>
-                {
-                    int countSeparators = CurrentFile.Path.Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1;
-                    if (countSeparators > 1)
-                    { 
-                        string pathBackFolder = CurrentFile.Path.Substring(0, CurrentFile.Path.LastIndexOf("\\"));
-                        CurrentFile = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
-                        try
-                        {
-                            FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(Files, pathBackFolder, "C:\\Program Files (x86)");
-                        }
-                        catch
-                        {
-                            FilesView = new ObservableCollection<FileTreeNodeModel>(){ };
-                        }
-                        SelectPath = pathBackFolder;
-                    }
-                });
+                string pathBackFolder = CurrentFolder.Path.Substring(0, CurrentFolder.Path.LastIndexOf("\\"));
+                CurrentFolder = new FileTreeNodeModel(pathBackFolder, Directory.Exists(pathBackFolder));
+                FilesView = FileManager.SearchElementsInFileTree<ObservableCollection<FileTreeNodeModel>>(FileTree, pathBackFolder, rootFolder);
+                PathSelectedFolder = pathBackFolder;
             }
         }
-
-        public ICommand ClickCheckBoxCommand
+        public void SelectFile(FileTreeNodeModel selectedFile)
         {
-            get
-            {
-                return new ActionCommand((obj) =>
-                {
-                    var file = obj as FileTreeNodeModel;
-                    try
-                    {
-                        FileManager.ChangeFileSource(file, Files);
-                    }
-                    catch
-                    {
-
-                    }
-              
-                });
-            }
+            FileManager.ChangeFileSource(selectedFile, FileTree);
         }
-        public ICommand FileSelection
+        public void CloseWindow(Window window)
         {
-            get
-            {
-                return new ActionCommand((obj) =>
-                {
-                    var files = (obj as MainWindowViewModel).Files;
-                });
-            }
+            window.Close();
         }
-        public ICommand CloseWindow
+        public void GenerateAndSaveFileList(Window window)
         {
-            get
-            {
-                return new ActionCommand((obj) =>
-                {
-                    (obj as Window).Close();
-                });
-            }
+            window.Close();
         }
         #endregion
-
-
-        #region METHODS
-
-        #endregion
-
 
         #region CONVERTERS 
         private class IconConverter : IMultiValueConverter

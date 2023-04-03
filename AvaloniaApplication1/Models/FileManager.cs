@@ -3,17 +3,41 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+//using static System.Net.WebRequestMethods;
+//using static System.Net.WebRequestMethods;
 
 namespace AvaloniaApplication1.Models
 {
     public class FileManager
     {
+
+        public static FileTreeNodeModel TestMethod(ObservableCollection<FileTreeNodeModel> fileTree, 
+                                                                  FileTreeNodeModel currentFolder, 
+                                                                  ObservableCollection<FileTreeNodeModel> filesView)
+        {
+            return null;
+            var a = fileTree.FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a") ??
+           fileTree.SelectMany(f => f.Children)
+                   .FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a");
+        }
+
+        //public static FileTree FindFileTreeByPath(FileTree root, string path)
+        //{
+        //    if (root.Path == path)
+        //    {
+        //        return root;
+        //    }
+
+        //    return root.Children?.Select(child => FindFileTreeByPath(child, path)).FirstOrDefault(result => result != null);
+        //}
+
+
         /// <summary>
         /// Возвращает коллекцию файлов 
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static ObservableCollection<FileTreeNodeModel> GetFiles(string path)
+        public static ObservableCollection<FileTreeNodeModel> GetFileTree(string path)
         {
             var outputCollectionFiles = new ObservableCollection<FileTreeNodeModel>();
             var filePaths = Directory.GetFileSystemEntries(path);
@@ -21,7 +45,6 @@ namespace AvaloniaApplication1.Models
             {
                 outputCollectionFiles.Add(new FileTreeNodeModel(file, ((File.GetAttributes(file) & FileAttributes.Directory) == FileAttributes.Directory)));
             }
-
             return outputCollectionFiles;
         }
 
@@ -115,6 +138,12 @@ namespace AvaloniaApplication1.Models
         /// <returns></returns>
         public static T SearchElementsInFileTree<T>(ObservableCollection<FileTreeNodeModel> files, string Path, string PathRootDirectory)
         {
+   //         var a = files.FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a") ??
+   //files.SelectMany(f => f.Children)
+   //        .FirstOrDefault(f => f.Path == "C:\\Windows\\assembly\\GAC_32\\ISymWrapper\\2.0.0.0__b03f5f7f11d50a3a");
+
+
+
             string[] partsPath = Path.Split("\\");
             string path = "";
             int indexPart = 0;
@@ -186,7 +215,7 @@ namespace AvaloniaApplication1.Models
         /// <param name="SelectedElement"></param>
         /// <param name="Files"></param>
         /// <param name="SelectedFiles"></param>
-        public static void ChangeFileSource(FileTreeNodeModel SelectedElement, ObservableCollection<FileTreeNodeModel> Files,List<string> SelectedFiles = null)
+        public static void ChangeFileSource(FileTreeNodeModel SelectedElement, ObservableCollection<FileTreeNodeModel> Files, List<string> SelectedFiles = null)
         {
             CheckAndChangedTreeParentChecked(Files, SelectedElement);
             if (Directory.Exists(SelectedElement.Path))
@@ -254,9 +283,9 @@ namespace AvaloniaApplication1.Models
             int countCheckedFiles = 0;
             foreach (var file in targetTreeFilesChanges)
             {
-                countCheckedFiles = file.IsChecked ==false ? +1 : countCheckedFiles;
+                countCheckedFiles = file.IsChecked == false ? +1 : countCheckedFiles;
             }
-            if(countCheckedFiles == 0)
+            if (countCheckedFiles == 0)
             {
                 var parentFile = SearchElementsInFileTree<FileTreeNodeModel>(Files, pathParent, "C:\\Program Files (x86)");
                 parentFile.IsChecked = true;
@@ -264,7 +293,7 @@ namespace AvaloniaApplication1.Models
         }
         static void FillingListSelectedElement(FileTreeNodeModel SelectedFile, List<string> SelectedFiles = null)
         {
-             //SelectedFile.IsChecked == true ? SelectedFiles.Add(SelectedFile.IsChecked)
+            //SelectedFile.IsChecked == true ? SelectedFiles.Add(SelectedFile.IsChecked)
         }
 
     }
