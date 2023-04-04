@@ -7,7 +7,6 @@
 	    x:Name="SelectFilesForm"
 	    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	    	
 	    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	    x:Class="AvaloniaApplication1.Views.MainWindow"
 	    Icon="/Assets/avalonia-logo.ico"
@@ -23,8 +22,7 @@
                     Orientation="Horizontal"
                     Spacing="5"
                     Margin="5 5 0 0"
-                    VerticalAlignment="Center"
-                    >
+                    VerticalAlignment="Center">
 			<Button Width="25"
 					Height="25"
 					Command="{Binding GoBackFolder}">
@@ -46,9 +44,7 @@
                  Height="10"
                  VerticalAlignment="Top"
 				 Text="{Binding PathSelectedFolder}"
-				 IsReadOnly="True"
-            >
-
+				 IsReadOnly="True">
 		</TextBox>
 
 		<ListBox  x:Name="myListBox"
@@ -58,9 +54,8 @@
 				  Width="380"
 				 Height="320"
 				  Margin=" 0 10 0 0"
-				 Items="{Binding FilesView}"
-				
-				 >
+				 Items="{Binding FilesView}">
+			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction Command="{Binding GoToFolder}"
@@ -94,88 +89,7 @@
 					</StackPanel>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-			<ListBox.Styles>
-	
-			</ListBox.Styles>
 		</ListBox>
-
-		<!--<DataGrid Name="fileViewer"
-				  Grid.Row="2"
-				  BorderBrush="Black"
-				  BorderThickness="1"
-				  Width="380"
-				  Items="{Binding Files}"
-				  Height="320"
-				  Margin=" 0 10 0 0"
-                  SelectionMode="Single"
-				  SelectedItem="{Binding SelectedItem}"
-				 
-				  >
-			
-			
-			<DataGrid.Columns>
-				<DataGridTemplateColumn>
-					<DataTemplate>
-						<CheckBox HorizontalAlignment="Center" Height="10"></CheckBox>
-					</DataTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn>
-					<DataTemplate>-->
-
-
-						<!--====================== Использование Button ========================-->
-						<!--<Button HorizontalAlignment="Stretch"
-								Background="Transparent"
-								Height="40"
-								Command="{Binding ForwardFolderCommand}">
-							<ContentControl>
-								<StackPanel Orientation="Horizontal"
-											Spacing="10"
-							  HorizontalAlignment="Stretch"
-							  VerticalAlignment="Stretch"
-							  Height="50">
-									<Image Margin="0 0 0 0"
-										   VerticalAlignment="Center"
-										   Height="25"
-										   >
-										<Image.Source>
-											<MultiBinding Converter="{x:Static vm:MainWindowViewModel.FileIconConverter}">
-												<Binding Path="IsDirectory"/>
-												<Binding Path="IsExpanded"/>
-											</MultiBinding>
-										</Image.Source>
-									</Image>
-									<TextBlock Text="{Binding Name}"
-											   VerticalAlignment="Center"
-											   >
-									</TextBlock>
-
-								</StackPanel>
-
-							</ContentControl>
-							<Button.Styles>
-								<Style Selector="Button:pointerover /template/ ContentPresenter">
-									<Setter Property="Background" Value="Transparent"></Setter>
-								</Style>
-							</Button.Styles>
-						</Button>-->
-
-						<!--====================== Использование DataGrid ========================-->
-						<!--<Grid ColumnDefinitions="Auto,Auto">
-							<Label Content="{Binding Name}"></Label>
-						</Grid>-->
-			
-			
-					<!--</DataTemplate>
-				</DataGridTemplateColumn>
-			</DataGrid.Columns>
-			<DataGrid.Styles>
-				<Style Selector="DataGridCell Rectangle">
-					<Setter Property="IsVisible" Value="False"></Setter>
-				</Style>
-			</DataGrid.Styles>
-		</DataGrid>-->
-
 
 		<StackPanel Grid.Row="3"
 			Orientation="Horizontal"
@@ -200,7 +114,5 @@
                  >
 			</Button>
 		</StackPanel>
-
-
 	</Grid>
 </Window>
