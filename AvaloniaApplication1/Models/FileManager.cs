@@ -11,8 +11,8 @@ namespace AvaloniaApplication1.Models
     public class FileManager
     {
 
-        public static FileTreeNodeModel TestMethod(ObservableCollection<FileTreeNodeModel> fileTree, 
-                                                                  FileTreeNodeModel currentFolder, 
+        public static FileTreeNodeModel TestMethod(ObservableCollection<FileTreeNodeModel> fileTree,
+                                                                  FileTreeNodeModel currentFolder,
                                                                   ObservableCollection<FileTreeNodeModel> filesView)
         {
             return null;
@@ -37,7 +37,7 @@ namespace AvaloniaApplication1.Models
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-       
+        /// 
 
         //public static ObservableCollection<FileTreeNodeModel> GetFileTree(string path)
         //{
@@ -131,11 +131,10 @@ namespace AvaloniaApplication1.Models
 
 
         #region Новая реализация
-        //public static FileTreeNodeModel SearchElementInFileTree(ObservableCollection<FileTreeNodeModel> fileTree, FileTreeNodeModel)
-        //{
-        //    var file = fileTree.AsEnumerable().Descendants
-
-        //}
+        public static void SearchElementsInFileTree(FileTreeNodeModel fileTree, FileTreeNodeModel selectedFile)
+        {
+            
+        }
         #endregion
 
 
